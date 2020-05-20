@@ -47,7 +47,6 @@
             $carId = mysqli_insert_id($link);
 
             for($i = 0; $i< count($tmpFiles); $i++){
-                var_dump($i);
                 $movingIMG = move_uploaded_file($tmpFiles["$i"]['tmp_name'], $target_file["$i"]);
 
                 if (!$movingIMG) {
@@ -57,7 +56,11 @@
                     exit;
                 } else {
                     $imgName = str_replace ('uploads/', '', $target_file[$i]);
-                    $x = mysqli_query($link, "INSERT INTO `images`(`car_id`, `name`) VALUES ('$carId','$imgName')" );
+                    if($i){
+                        mysqli_query($link, "INSERT INTO `images`(`car_id`, `name`, `avatar`) VALUES ('$carId','$imgName', '0')" );
+                    } else {// first img avatar = true
+                        mysqli_query($link, "INSERT INTO `images`(`car_id`, `name`, `avatar`) VALUES ('$carId','$imgName', '1')" );
+                    }
                 }
             }
             header('Location: ./');

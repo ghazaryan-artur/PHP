@@ -29,10 +29,34 @@
         .deleteImg {
             position: absolute;
             right:16px;
+            top:1px;
             border:none;
         }
         .deleteImg:hover{
             background-color: gray;
+        }
+        .makeMain {
+            border: none;
+            width: 100%;
+            position: absolute;
+            bottom:8px;
+            left:0px;
+            width: 100%;
+            margin-right:auto;
+            margin-left: auto;
+        }
+        .makeMain button{
+            border: none;
+            background: black;
+            width: 85%;
+            display:block;
+            margin:auto;
+            opacity: 0.1;
+            color: white;
+            /* height: 20px; */
+        }
+        .imgDiv:hover .makeMain button{
+            opacity: 0.7;
         }
 
     </style>
@@ -41,7 +65,7 @@
     <div class="w-75 mt-5 mx-auto border border-secondary p-4">
         <h3 class="h3 mx-auto mb-4 text-center">Edit car information</h3>
 
-        <form action="update_car.php" method="POST">
+        <form action="update_car.php" method="POST" enctype="multipart/form-data">
             <input name="id" class="d-none" type="text" value="<?= $thisCar['id']?> ">
             <div class="mb-5">
                 <div>
@@ -77,17 +101,24 @@
                     <?php endif ?>
                 </div>   
                 <div>
-                    <label class="w-100">Add a pic 
+                    <label class="w-100">Car img 
                         <input class="form-control-file mb-1" type="file" name="uploads_img[]" multiple>
                     </label>
-                    <?php  if(isset($_SESSION['error']['description'])) : ?>
-                        <div class="alert alert-danger" role="alert"> <?= $_SESSION['error']['description'] ?> </div>
+                    <?php  if(isset($_SESSION['error']['upload']['common'])) : ?>
+                        <div class="alert alert-danger" role="alert"> <?= $_SESSION['error']['upload']['common'] ?> </div>
                     <?php endif ?>
+                    <?php  if(isset($_SESSION['error']['upload']['size'])) : ?>
+                        <div class="alert alert-danger" role="alert"> <?= $_SESSION['error']['upload']['size'] ?> </div>
+                    <?php endif ?>
+                    <?php  if(isset($_SESSION['error']['upload']['format'])) : ?>
+                        <div class="alert alert-danger" role="alert"> <?= $_SESSION['error']['upload']['format'] ?> </div>
+                    <?php endif ?>
+
                 </div>  
             </div>
 
             <div class="d-flex justify-content-end w-100">
-                <input class="btn btn-info w-25" type="submit" value="Edit">
+                <input class="btn btn-info w-25 mr-2" type="submit" value="Edit">
                 <a href="./" class="btn btn-secondary w-25">Cancel</a>
             </div>
                 
@@ -96,16 +127,12 @@
 
         <div class="row mt-3">
             <?php while( $images = mysqli_fetch_assoc($imgQuery)) : ?>
-                <div id="<?= $images['id']. 1 ?>" class="col-3 position-relative">
+                <div id="<?= $images['id']. 1 ?>" class="col-3 position-relative imgDiv">
                     <img class="img-thumbnail" src="uploads/<?= $images['name']?>" id="<?= $images['id']?>">
-                    <button onclick="deleteImg(<?= $images['id'] ?>, <?= $images['car_id'] ?>)" class="deleteImg">&times</button>                  
+                    <button onclick="deleteImg(<?= $images['id'] ?>, <?= $images['car_id'] ?>)" class="deleteImg">&times</button>
+                    <div class="makeMain"><button onclick="changeAvatar(<?=$images['id']?>, <?=$images['car_id']?>)">Set as main</button></div>                  
                 </div> 
             <?php endwhile ?>
-            <a href="addImg">
-                <div class="col-3 position-relative">
-                      
-                </div> 
-            </a>
         </div>
 
     </div>    

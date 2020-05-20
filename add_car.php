@@ -60,7 +60,7 @@
                     <?php endif ?>
                 </div> 
                 <div>
-                    <label class="w-100">Car img 
+                    <label class="w-100">Car img <small>(first one is going to be an avatar)</small> 
                         <input class="form-control-file mb-1" type="file" name="uploads_img[]" multiple>
                     </label>
                     <?php  if(isset($_SESSION['error']['upload']['common'])) : ?>

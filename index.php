@@ -1,6 +1,9 @@
 <?php
     include 'connection.php';
-    $query = mysqli_query($link, 'SELECT * FROM market');
+    $query = mysqli_query($link, "SELECT market.id, market.title, market.description, market.price, market.count, images.name
+                                 FROM market LEFT JOIN images ON market.id =images.car_id AND images.avatar = 1 ORDER BY market.id");
+        
+
 ?>
 
 <!DOCTYPE html>
@@ -15,9 +18,10 @@
     <div class="w-75 mx-auto mt-5">
         <table class="table table-striped">
             <thead>
-                <tr>
+                <tr >
                 <th scope="col">ID</th>
                 <th scope="col">Product</th>
+                <th width="15%" scope="col">Main image</th>
                 <th scope="col">Description</th>
                 <th scope="col">Price</th>
                 <th scope="col">Count</th>
@@ -29,6 +33,10 @@
                     <tr id="<?= $car['id']; ?>">
                         <td><?= $car['id']; ?></td>
                         <td><?= $car['title']; ?></td>
+                        <td>
+                            <img class="img-thumbnail"src="uploads/<?php if(isset($car['name'])) echo $car['name']; ?>">
+                            <!-- <button onclick="changeAvatar()">Change</button> -->
+                        </td>
                         <td><?= $car['description']; ?></td>  				   				   				  
                         <td><?= $car['price']; ?></td>
                         <td><?= $car['count']; ?></td>
