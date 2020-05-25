@@ -27,7 +27,7 @@
     <div class="w-75 mt-5 mx-auto border border-secondary p-4">
         <h5 class="h5 mb-4 text-center">Please, fill correctly every fields</h5>
 
-        <form action="insertData.php" method="POST">
+        <form action="insertData.php" method="POST" enctype="multipart/form-data">
             <div class="mb-5">
                 <div>
                     <label class="w-100">Your name
@@ -57,6 +57,14 @@
                     <label class="w-100">Confirm password
                         <input name="confPassword" type="password" class="form-control">
                     </label>
+                </div> 
+                <div>
+                    <label class="w-100">Choose a foto
+                        <input name="img" type="file" class="form-control">
+                    </label>
+                    <?php  if(isset($_SESSION['error']['img'])) : ?>
+                        <div class="alert alert-danger" role="alert"> <?= $_SESSION['error']['img'] ?> </div>
+                    <?php endif ?>
                 </div> 
                   
             </div>

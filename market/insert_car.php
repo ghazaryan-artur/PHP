@@ -44,8 +44,7 @@
                                 VALUES ('$title','$desc','$price','$count')");
         
             
-            $carId = mysqli_insert_id($link);
-
+            $carId = mysqli_insert_id($link);            
             for($i = 0; $i< count($tmpFiles); $i++){
                 $movingIMG = move_uploaded_file($tmpFiles["$i"]['tmp_name'], $target_file["$i"]);
 

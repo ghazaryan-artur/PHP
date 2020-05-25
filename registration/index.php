@@ -1,6 +1,12 @@
 <?php
     session_start();
-    //  if($_SESSION['isLogin'] == 1){}
+    include 'db-connect.php';
+    
+    if(isset($_SESSION['isLogined']) && $_SESSION['isLogined'] == 1){
+        $id = $_SESSION['id'];
+        $user = mysqli_fetch_assoc(mysqli_query($link, "SELECT `email`, `name`, `image`  FROM `users` WHERE `id` = '$id'"));
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +42,6 @@
         }
         .loginBlock{
             display: flex;
-            /*justify-content: inline;*/
             width: 20vw;
             position: relative;
         }
@@ -67,7 +72,7 @@
             display:none;
             position:absolute;
             z-index: 1000;
-            height: 200px;
+            height: 220px;
             width: 20vw;
             top: 70px;
             padding: 15px;
@@ -97,11 +102,20 @@
             text-align: center;
             width: 50%;
             padding: 22px !important;
+            padding-top: 10px !important;
             color: white;
+        }
+        #avatar {
+            padding: 10px !important;
+            height: 100%
+        }
+        #avatar img  {
+            height: 100%
         }
     </style>
 </head>
 <body>
+
     <nav>
         <ul>
             <li>Торговля</li>
@@ -113,7 +127,8 @@
         <div class="loginBlock">
             <?php if(isset($_SESSION['isLogined']) && $_SESSION['isLogined'] == 1 )  { ?>
                 <div class="logined d-flex justify-content-between w-100">
-                    <div class="">Hello, <?php if(isset($_SESSION['name'])) echo $_SESSION['name'] ?></div>
+                    <div class="">Hello, <?= $user['name'] ?></div>
+                    <div id="avatar"><img alt="Profile foto" src="uploads/<?=$user['image']?>"></div>
                     <div class=""><a href="login.php?isLogined=0">Sign Out</a></div>
                 </div>
 
@@ -122,14 +137,16 @@
                 <div class="hiddenBlock">
                     <form action="login.php" method="POST">
                         <div class="mb-2">
-                            <input name="email" placeholder="Your email" type="email">
+                            <input value="<?php if(isset($_SESSION['email'])) {echo $_SESSION['email']; unset($_SESSION['email']);} ?>" name="email" placeholder="Your email" type="email">
                         </div>
                         <div>     
                             <input name="password" placeholder="Your password" type="password" >
                         </div>
-                        <?php  if(isset($_SESSION['error'])) : ?>
-                            <span class="error"><?= $_SESSION['error'] ?></span>
-                        <?php endif ?>
+                        <div class="w-100 p-0" style="height: 24px">
+                            <?php  if(isset($_SESSION['error'])) : ?>
+                                <span class="error"><?= $_SESSION['error'] ?></span>
+                            <?php endif ?>
+                        </div>
                         <input value="Sign in" type="submit" class="btn btn-success w-50 mx-auto mt-3 d-block">
                     </form>
                 </div>
@@ -166,3 +183,5 @@
 
 </body>
 </html>
+<?php 
+    unset($_SESSION['error']);
