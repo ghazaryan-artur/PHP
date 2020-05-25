@@ -55,7 +55,6 @@
             $password = cleanValue($link, 'password');
             
             $uploadingName = microtime(). $imgType;
-            // $uploadingName = 'uploads/'. $uniqeStr. $imgType;  
 
             $result = mysqli_query($link, "INSERT INTO `users`(`name`, `email`, `password`, `image`) 
                                 VALUES ('$name','$email', MD5('$password'), '$uploadingName')");

@@ -1,12 +1,12 @@
 <?php
     session_start();
     include 'db-connect.php';
-    
+
     if(isset($_SESSION['isLogined']) && $_SESSION['isLogined'] == 1){
         $id = $_SESSION['id'];
         $user = mysqli_fetch_assoc(mysqli_query($link, "SELECT `email`, `name`, `image`  FROM `users` WHERE `id` = '$id'"));
-    }
 
+    }
 ?>
 
 <!DOCTYPE html>
@@ -98,20 +98,48 @@
             background: #39f;
 
         }
-        .logined div {
+        .logined div:first-child, 
+        .logined div:last-child {
             text-align: center;
             width: 50%;
-            padding: 22px !important;
-            padding-top: 10px !important;
+            padding: 22px ;
+            padding-top: 10px;
             color: white;
         }
-        #avatar {
-            padding: 10px !important;
-            height: 100%
+        div.logined #avatar {
+            padding: 10px 0 !important;
+            height: 100%;
+            text-align: center;
+            cursor:pointer;
+        } 
+        #avatar div {   
+            padding: 0;
+            background:  #39f;
+        }
+        #avatar button:focus{
+            outline: none;
         }
         #avatar img  {
-            height: 100%
+            height: 100%;
         }
+
+        .changeFoto{
+            display: none;
+            border: 1px solid #39f;
+            position: absolute;
+            top: 70px;
+            width: 20vw !important;
+            background: white;
+        }
+        #uploadFile {
+            margin: 10px auto;
+            width: 131px;
+            padding: 0;
+            height: 32px;
+
+        }
+
+         
     </style>
 </head>
 <body>
@@ -125,15 +153,28 @@
             <li>О нас</li>
         </ul>
         <div class="loginBlock">
-            <?php if(isset($_SESSION['isLogined']) && $_SESSION['isLogined'] == 1 )  { ?>
+            <?php if(isset($_SESSION['isLogined']) && $_SESSION['isLogined'] == 1 )  : ?>
                 <div class="logined d-flex justify-content-between w-100">
-                    <div class="">Hello, <?= $user['name'] ?></div>
-                    <div id="avatar"><img alt="Profile foto" src="uploads/<?=$user['image']?>"></div>
+                    <div >Hello, <?= $user['name'] ?></div>
+                    <div id="avatar" onclick="show2()">
+                        <img alt="Profile foto" src="uploads/<?=$user['image']?>">
+                    </div>
                     <div class=""><a href="login.php?isLogined=0">Sign Out</a></div>
                 </div>
 
 
-            <?php } else { ?>
+                <div class="changeFoto p-3">
+             
+                    <h5 class="text-center my-2">Edit main foto.</h5>
+                    <form action="updateImg.php?id=<?= $id ?>" method="POST" enctype="multipart/form-data">
+                        <input name="img" id="uploadFile" class="form-control" type="file" >
+                        <input  type="submit" value="Upload" class="form-control">
+                    </form>
+    
+                <div>
+
+
+            <?php  else : ?>
                 <div class="hiddenBlock">
                     <form action="login.php" method="POST">
                         <div class="mb-2">
@@ -152,7 +193,7 @@
                 </div>
                 <div onclick="show()" class="login"><span>Sign in</span></div>
                 <div class="reg"><a href="registration.php">Registration</a></div>
-            <?php } ?>            
+            <?php endif ?>            
         </div>
     </nav>
     <div class="w-100">
@@ -174,6 +215,13 @@
             } else {
                 document.getElementsByClassName('hiddenBlock')[0].style.display = 'block';
                 document.getElementsByClassName('login')[0].style.backgroundColor = "rgb(8, 8, 148)";
+            }
+        }
+        function show2(){
+            if(document.getElementsByClassName('changeFoto')[0].style.display == 'block'){
+                document.getElementsByClassName('changeFoto')[0].style.display = 'none';
+            } else {
+                document.getElementsByClassName('changeFoto')[0].style.display = 'block';
             }
         }
     </script>
