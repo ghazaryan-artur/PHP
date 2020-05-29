@@ -3,7 +3,10 @@
         private $connect;
         function __construct($server,$user,$pass,$dbname){
             $this->connect = new Mysqli($server, $user, $pass, $dbname);
-        
+            if (mysqli_connect_errno()) {
+                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                exit();
+            }
         }
         
         public function select($query){
@@ -18,12 +21,12 @@
             $qKeys ='';
             $qValues = '';
             foreach ($data as $key => $value){
-                $qKeys .= $key.',';
-                $qValues .= '"'. $value .'"' .',';
+                $qKeys .= $this->connect->real_escape_string(htmlspecialchars($key)).',';
+                $qValues .= '"'. $this->connect->real_escape_string(htmlspecialchars($value)) .'"' .',';
             }
+            $table = $this->connect->real_escape_string(htmlspecialchars($table));
             $qKeys = substr($qKeys,0,-1);
             $qValues = substr($qValues,0,-1);
-
             $result = $this->connect->query("INSERT INTO $table ($qKeys) VALUES ($qValues)");
             return $result;
         }
@@ -39,12 +42,22 @@
             }
             $toSet = substr($toSet,0,-2);
             return $this->connect->query("UPDATE $table SET $toSet WHERE $where");
-            
-          
+        }
+        
+        public function insertTest($table, $data){
+            $qKeys ='';
+            $qValues = '';
+    
+            $qKeys = substr($qKeys,0,-1);
+            $qValues = substr($qValues,0,-1);
 
+            $result = $this->connect->query("INSERT INTO $table ($qKeys) VALUES ($qValues)");
+            return $result;
         }
 
-
+        function __destruct() {
+            $this->connect->close();
+        }
     }
     $obj = new DB('localhost','root','','artur');
     // SELECT
@@ -52,14 +65,14 @@
     // var_dump( $sel);
 
     // INSERT
-    // $data = [
-    //     'title' => 'Ford',
-    //     'description' => 'Lovely old american car',
-    //     'count' => 1000,
-    //     'price' => 7000
-    // ];
-    // $insert = $obj->insert('market',  $data);
-    // var_dump($insert);
+    $data = [
+        'title' => 'Ford',
+         'description' => 'Lovely old american car',
+         'count' => 1000,
+         'price' => 7000
+     ];
+     $insert = $obj->insert('market',  $data);
+     var_dump($insert);
 
     // DELETE
     // $delete = $obj->delete('market', 'id = 131');   
@@ -77,4 +90,3 @@
     // var_dump($update);
 
 
-    
