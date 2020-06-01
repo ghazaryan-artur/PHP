@@ -3,39 +3,42 @@
         private $connect;
         function __construct($server,$user,$pass,$dbname){
             $this->connect = new Mysqli($server, $user, $pass, $dbname);
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+            if ($this->connect->connect_errno) {
+                printf("Не удалось подключиться: %s\n", $this->connect->connect_error());
                 exit();
             }
         }
         
         public function select($query){
-                $data =$this->connect->query($query);
-                while ($row =  mysqli_fetch_assoc($data)) {
-                    $result[] = $row;
+          
+                if($data = $this->connect->query($query)){
+                    while ($row = $data->fetch_assoc()) {
+                        $result[] = $row;
+                    }
+                return $result;
+                } else {
+                    return false;
                 }
-                return $result; 
         }
 
         public function insert($table, $data){
             $qKeys ='';
             $qValues = '';
             foreach ($data as $key => $value){
-                $qKeys .= $this->connect->real_escape_string(htmlspecialchars($key)).',';
-                $qValues .= '"'. $this->connect->real_escape_string(htmlspecialchars($value)) .'"' .',';
+                $qKeys .= $key.',';
+                $qValues .= '"'. $this->connect->real_escape_string($value) .'"' .',';
             }
-            $table = $this->connect->real_escape_string(htmlspecialchars($table));
             $qKeys = substr($qKeys,0,-1);
             $qValues = substr($qValues,0,-1);
             $result = $this->connect->query("INSERT INTO $table ($qKeys) VALUES ($qValues)");
             return $result;
         }
 
-        public function delete($from, $where){
+        public function delete($from, $where = "1"){
             return $this->connect->query("DELETE FROM $from WHERE $where");
         }
 
-        public function update($table, $data, $where= "1 = 1"){
+        public function update($table, $data, $where = "1"){
             $toSet = '';
             foreach ($data as $key => $value){
                 $toSet .= "$key = '$value', "; 
@@ -44,14 +47,8 @@
             return $this->connect->query("UPDATE $table SET $toSet WHERE $where");
         }
         
-        public function insertTest($table, $data){
-            $qKeys ='';
-            $qValues = '';
-    
-            $qKeys = substr($qKeys,0,-1);
-            $qValues = substr($qValues,0,-1);
-
-            $result = $this->connect->query("INSERT INTO $table ($qKeys) VALUES ($qValues)");
+        public function truncate($table){
+            $result = $this->connect->query("TRUNCATE TABLE $table");
             return $result;
         }
 
@@ -61,18 +58,18 @@
     }
     $obj = new DB('localhost','root','','artur');
     // SELECT
-    // $sel = $obj->select("SELECT *  FROM market");
-    // var_dump( $sel);
+    $sel = $obj->select("SELECT *  FROM market");
+    var_dump($sel);
 
     // INSERT
-    $data = [
+   /* $data = [
         'title' => 'Ford',
          'description' => 'Lovely old american car',
          'count' => 1000,
          'price' => 7000
-     ];
-     $insert = $obj->insert('market',  $data);
-     var_dump($insert);
+    ];
+    $insert = $obj->insert('market',  $data);
+    var_dump($insert); */
 
     // DELETE
     // $delete = $obj->delete('market', 'id = 131');   
@@ -90,3 +87,6 @@
     // var_dump($update);
 
 
+    // TRUNCATE TABLE 
+    // $truncate = $obj->truncate('market');
+    // var_dump($truncate);
