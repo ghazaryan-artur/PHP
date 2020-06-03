@@ -8,14 +8,10 @@ class Settings{
 
 	
 	public function general($data){
-		if (count($data) < 2)
-		var_dump('You call General method with following params');
-		foreach ($data as $value){
-			var_dump("one of the params is", $value);
-		}
-		if (count($data) < 2) { // if we need at least 2 param 
-			var_dump("error, method need at least 2 param"); // any param since third is ignored
-		}
+		$numargs = func_num_args();
+		var_dump("You call General method with ".$numargs ." arguments");
+		// every arguments can called by func_get_arg(int)
+	
 	}
 	
 }

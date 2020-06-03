@@ -6,14 +6,9 @@
 
 	// point 1
 
-	$components = explode('/', substr($_SERVER['REQUEST_URI'], 1));
+	// $components = explode('/', substr($_SERVER['REQUEST_URI'], 1));
+	$routs = new \system\Routes;
 
-	var_dump($components);
-	if(!empty($components[0])){
-		new \system\Routes($components);
-	} else {
-		echo "there is no request for object";
-	}
 
 
 /*
@@ -23,7 +18,7 @@
 	3. if class exists ---> create object ( $ctrl_obj = new $class_name)
 	4. if component2 exists ---> if method_exists($ctrl_obj, component2) --> $ctrl_obj->$component2($component3, $component4)
 	
-
+ 
 $class_name = "controllers\\".ucfirst($component1)
 
 	doamin.am/settings/general
